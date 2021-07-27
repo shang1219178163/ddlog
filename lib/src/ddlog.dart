@@ -6,18 +6,22 @@
 //  Copyright © 7/4/21 shang. All rights reserved.
 //
 
-
-import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform;
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform;
 
 // ignore: non_constant_identifier_names, unnecessary_question_mark
-void ddlog(dynamic? obj){
+void ddlog(dynamic? obj) {
   DDTraceModel model = DDTraceModel(StackTrace.current);
 
-  var list = [DateTime.now().toString(), model.fileName, model.className, model.selectorName, "[${model.lineNumber}:${model.columnNumber}]"]
-      .where((element) => element != "");
+  var list = [
+    DateTime.now().toString(),
+    model.fileName,
+    model.className,
+    model.selectorName,
+    "[${model.lineNumber}:${model.columnNumber}]"
+  ].where((element) => element != "");
   print("${list.join(" ")}: $obj");
 }
-
 
 class DDTraceModel {
   final StackTrace _trace;
@@ -39,11 +43,12 @@ class DDTraceModel {
       case TargetPlatform.windows:
         {
           var traceString2 = _trace.toString().split("\n")[2];
-          List<String> list = traceString2.split(" ").where((element) => element != "").toList();
-          this.selectorName = list.last
-              .replaceAll("[", "")
-              .replaceAll("]", "()")
-              .trim();
+          List<String> list = traceString2
+              .split(" ")
+              .where((element) => element != "")
+              .toList();
+          this.selectorName =
+              list.last.replaceAll("[", "").replaceAll("]", "()").trim();
 
           _parseClassName(path: list.first);
           _parseLineAndcolumn(location: list[1]);
@@ -74,7 +79,12 @@ class DDTraceModel {
 
   void _parseClassName({required String path}) {
     assert(path.contains("/"));
-    List<String> list = path.split("/").last.split(" ").where((element) => element != "").toList();
+    List<String> list = path
+        .split("/")
+        .last
+        .split(" ")
+        .where((element) => element != "")
+        .toList();
     this.fileName = list.first.trim();
   }
 
@@ -84,5 +94,4 @@ class DDTraceModel {
     this.lineNumber = int.parse(list.first.trim());
     this.columnNumber = int.parse(list.last.trim());
   }
-
 }

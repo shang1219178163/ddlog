@@ -1,5 +1,5 @@
 name: ddlog
-description: flutter log info "[DateTime fileNmae className line ...].
+description: flutter log info "[DateTime fileNmae className line ...](iOS && android && linux && macOS && windows && fuchsia).
 homepage: https://github.com/shang1219178163
 repository: https://github.com/shang1219178163/flutter_ddlog/tree/main
 version: 0.0.2
