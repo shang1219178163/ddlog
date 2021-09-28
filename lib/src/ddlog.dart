@@ -8,6 +8,7 @@
 
 import 'package:flutter/foundation.dart'
     show TargetPlatform, defaultTargetPlatform;
+import 'package:flutter/material.dart';
 
 // ignore: non_constant_identifier_names, unnecessary_question_mark
 void ddlog(dynamic? obj) {
@@ -23,6 +24,7 @@ void ddlog(dynamic? obj) {
   print("${list.join(" ")}: $obj");
 }
 
+/// TraceModel
 class DDTraceModel {
   final StackTrace _trace;
 
@@ -36,6 +38,7 @@ class DDTraceModel {
     _parseTrace();
   }
 
+  /// parse trace
   void _parseTrace() {
     switch (defaultTargetPlatform) {
       case TargetPlatform.linux:
@@ -43,6 +46,8 @@ class DDTraceModel {
       case TargetPlatform.windows:
         {
           var traceString2 = _trace.toString().split("\n")[2];
+          // print(traceString2);
+
           List<String> list = traceString2
               .split(" ")
               .where((element) => element != "")
@@ -57,8 +62,11 @@ class DDTraceModel {
       default:
         {
           var traceString1 = this._trace.toString().split("\n")[1];
+          // print(traceString1);
+
           List<String> list = traceString1
               .replaceAll("#1", "")
+              .replaceAll(".<anonymous closure>", "")
               .replaceAll(")", "")
               .replaceAll("(", "")
               .replaceAll(".dart:", ".dart ")
@@ -77,6 +85,7 @@ class DDTraceModel {
     }
   }
 
+  /// parse className
   void _parseClassName({required String path}) {
     assert(path.contains("/"));
     List<String> list = path
@@ -88,6 +97,7 @@ class DDTraceModel {
     this.fileName = list.first.trim();
   }
 
+  /// parse Line and column
   void _parseLineAndcolumn({required String location}) {
     assert(location.contains(":"));
     List<String> list = location.split(":");
