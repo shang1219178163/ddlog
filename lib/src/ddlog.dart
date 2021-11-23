@@ -19,7 +19,7 @@ void ddlog(dynamic? obj) {
     model.fileName,
     model.className,
     model.selectorName,
-    "[${model.lineNumber}:${model.columnNumber}]"
+    model.lineNumber == "" ? "" : "[${model.lineNumber}:${model.columnNumber}]"
   ].where((element) => element != "");
   print("${list.join(" ")}: $obj");
 }
@@ -31,8 +31,8 @@ class DDTraceModel {
   String fileName = "";
   String className = "";
   String selectorName = "";
-  int lineNumber = 0;
-  int columnNumber = 0;
+  String lineNumber = "";
+  String columnNumber = "";
 
   DDTraceModel(this._trace) {
     _parseTrace();
@@ -46,23 +46,22 @@ class DDTraceModel {
       case TargetPlatform.windows:
         {
           var traceString2 = _trace.toString().split("\n")[2];
-          // print(traceString2);
 
           List<String> list = traceString2
               .split(" ")
               .where((element) => element != "")
               .toList();
-          this.selectorName =
-              list.last.replaceAll("[", "").replaceAll("]", "()").trim();
+          // this.selectorName = list.last.replaceAll("[", "").replaceAll("]", "()").trim();
+          this.selectorName = list[1];
 
-          _parseClassName(path: list.first);
-          _parseLineAndcolumn(location: list[1]);
+          var nameAndLines = list.last.split("/").last.split(".dart:");
+          this.className = nameAndLines.first + ".dart";
+          _parseLineAndcolumn(location: nameAndLines.last);
         }
         break;
       default:
         {
           var traceString1 = this._trace.toString().split("\n")[1];
-          // print(traceString1);
 
           List<String> list = traceString1
               .replaceAll("#1", "")
@@ -87,21 +86,23 @@ class DDTraceModel {
 
   /// parse className
   void _parseClassName({required String path}) {
-    assert(path.contains("/"));
-    List<String> list = path
-        .split("/")
-        .last
-        .split(" ")
-        .where((element) => element != "")
-        .toList();
-    this.fileName = list.first.trim();
+    if (path.contains("/")) {
+      List<String> list = path
+          .split("/")
+          .last
+          .split(" ")
+          .where((element) => element != "")
+          .toList();
+      this.fileName = list.first.trim();
+    }
   }
 
   /// parse Line and column
   void _parseLineAndcolumn({required String location}) {
-    assert(location.contains(":"));
-    List<String> list = location.split(":");
-    this.lineNumber = int.parse(list.first.trim());
-    this.columnNumber = int.parse(list.last.trim());
+    if (location.contains(":")) {
+      List<String> list = location.split(":");
+      this.lineNumber = list.first.trim();
+      this.columnNumber = list.last.trim().replaceAll(")", "");
+    }
   }
 }
