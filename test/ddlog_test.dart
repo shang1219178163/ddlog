@@ -4,6 +4,6 @@ import 'package:ddlog/ddlog.dart';
 
 void main() {
   test('input values', () {
-    ddlog("obj");
+    DLog.d("obj");
   });
 }

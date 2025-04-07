@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:ddlog/ddlog.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  DLog.enableColor = false;
+
   runApp(MyApp());
 }
 
@@ -31,19 +36,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-
-    _counterDes(two: 'ad', one: 'bb');
+  @override
+  void initState() {
+    super.initState();
   }
 
-  void _counterDes({required String one, required String two}) {
-    ddlog(_counter);
-  }
-
-    @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -69,5 +67,28 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  void _incrementCounter() {
+    _counter++;
+    setState(() {});
+    onTest();
+  }
+
+  void onTest() {
+    try {
+      var map = {};
+      jsonDecode(map["a"]);
+    } catch (e) {
+      debugPrint("$this $e"); //flutter: _MyHomePageState#93d3a type 'Null' is not a subtype of type 'String'
+      DLog.d(
+          "$e"); //[log] [2025-04-07 09:51:55.124314][DEBUG][ios][_MyHomePageState.onTest Line:89]: type 'Null' is not a subtype of type 'String'
+      DLog.i(
+          "$e"); //[log] [2025-04-07 09:51:55.125002][INFO][ios][_MyHomePageState.onTest Line:90]: type 'Null' is not a subtype of type 'String'
+      DLog.w(
+          "$e"); //[log] [2025-04-07 09:51:55.125578][WARN][ios][_MyHomePageState.onTest Line:91]: type 'Null' is not a subtype of type 'String'
+      DLog.e(
+          "$e"); //[log] [2025-04-07 09:51:55.126098][ERROR][ios][_MyHomePageState.onTest Line:92]: type 'Null' is not a subtype of type 'String'
+    }
   }
 }
