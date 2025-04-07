@@ -113,7 +113,7 @@ class DLog {
       return "";
     }
 
-    final (className, functionName, fileName, lineNumber) = _getCallerInfo();
+    final (className, functionName, _, lineNumber) = _getCallerInfo();
     final now = DateTime.now();
     final timeStr = now.toString();
     final platform = _getPlatform();
